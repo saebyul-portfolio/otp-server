@@ -1,0 +1,24 @@
+{
+  "name": "otp-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/saebyul-portfolio/otp-server.git"
+  },
+  "author": "saebyul1221",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/saebyul-portfolio/otp-server/issues"
+  },
+  "homepage": "https://github.com/saebyul-portfolio/otp-server#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "jade": "^1.11.0",
+    "path": "^0.12.7"
+  }
+}
