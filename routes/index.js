@@ -2,6 +2,8 @@ const express = require("express")
 const router = express.Router()
 const config = require("../config")
 const knex = require("knex")(config.database)
+const { isToken } = require("../funcs/number")
+const { allowed, denied, notToken, catchError } = require("../funcs/sendHttpCode")
 
 router.get("/", (req, res) => {
   res.status(200).json({
@@ -12,7 +14,7 @@ router.get("/", (req, res) => {
 router.post("/oauth", async (req, res) => {
   const token = isNaN(req.body.token) ? req.body.token : parseInt(req.body.token)
   const oauth = await knex("userinfo").select("*")
-  if (!isNaN(token) && Number.isInteger(token) && String(token).length === 6) {
+  if (isToken(usedToken)) {
     if (oauth.length === 0)
       return await knex("userinfo").insert({
         user: "administrator",
@@ -27,21 +29,30 @@ router.post("/oauth", async (req, res) => {
         used: false,
       })
       .then(() => {
-        res.status(200).json({
-          success: true,
-        })
+        allowed(res)
       })
       .catch((err) => {
-        res.status(500).json({
-          success: false,
-          error: err,
-        })
+        catchError(res, err)
       })
   } else {
-    res.status(500).json({
-      error: "The token value must be a 6-digit integer.",
-    })
+    catchError(res, "The token value must be a 6-digit integer.")
   }
 })
 
+router.post("/check", async (req, res) => {
+  const sendToken = req.body.token
+  if (!isToken(sendToken)) return notToken(res, "The token has already been used.")
+  else {
+    const otpToken = await knex("userinfo").where({ program: req.body.program })
+    if (otpToken.length === 0) return catchError(res, "Unknown header")
+    else {
+      const isUsed = await knex("userinfo").select("used").where({ program: req.body.program })
+      if (isUsed[0]) return denied(res, "This token has already been used.")
+      if (sendToken === otpToken[0]) {
+        await knex("userinfo").update({ used: true }).where({ program: req.body.program })
+        return allowed(res)
+      }
+    }
+  }
+})
 module.exports = router
