@@ -1,6 +1,9 @@
 CREATE SCHEMA `otp` ;
 USE `otp`;
 
+/*
+password 컬럼은 Multi Account 대응용
+*/
 DROP TABLE IF EXISTS `userinfo`;
 CREATE TABLE `userinfo` (
   `user` VARCHAR(255) NOT NULL PRIMARY KEY,

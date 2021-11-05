@@ -18,7 +18,7 @@ router.post("/oauth", async (req, res) => {
     if (oauth.length === 0)
       return await knex("userinfo").insert({
         user: "administrator",
-        password: "idk what is this",
+        password: "will be the password",
         program: "todo",
         oauth: token,
       })
@@ -55,4 +55,5 @@ router.post("/check", async (req, res) => {
     }
   }
 })
+
 module.exports = router
