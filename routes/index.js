@@ -14,7 +14,7 @@ router.get("/", (req, res) => {
 router.post("/oauth", async (req, res) => {
   const token = isNaN(req.body.token) ? req.body.token : parseInt(req.body.token)
   const oauth = await knex("userinfo").select("*")
-  if (isToken(usedToken)) {
+  if (isToken(token)) {
     if (oauth.length === 0)
       return await knex("userinfo").insert({
         user: "administrator",
