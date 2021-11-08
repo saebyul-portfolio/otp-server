@@ -41,6 +41,7 @@ router.post("/oauth", async (req, res) => {
 router.post("/check", async (req, res) => {
   const sendToken = req.body.token
   if (!isToken(sendToken)) return notToken(res, "The token has already been used.")
+  if (!req.body.prohram) return catchError(res, "program parameter is required.")
   else {
     const otpToken = await knex("userinfo").where({ program: req.body.program })
     if (otpToken.length === 0) return catchError(res, "Unknown header")
