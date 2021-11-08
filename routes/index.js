@@ -40,7 +40,7 @@ router.post("/oauth", async (req, res) => {
 
 router.post("/check", async (req, res) => {
   const sendToken = req.body.token
-  if (!isToken(sendToken)) return notToken(res, "The token has already been used.")
+  if (!isToken(sendToken)) return notToken(res, "This is not a valid token.")
   if (!req.body.program) return catchError(res, "program parameter is required.")
   else {
     const otpToken = await knex("userinfo").where({ program: req.body.program })
