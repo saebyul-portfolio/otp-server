@@ -49,10 +49,9 @@ router.post("/check", async (req, res) => {
       const isUsed = await knex("userinfo")
         .select("used")
         .where({ program: req.body.program, oauth: sendToken })
-      console.log(isUsed)
       if (!isUsed) return catchError(res, "Unexpected Token")
       if (isUsed[0].used === 1) return denied(res, "This token has already been used.")
-      if (sendToken === otpToken[0].oauth) {
+      if (`${sendToken}` === otpToken[0].oauth) {
         await knex("userinfo").update({ used: true }).where({ program: req.body.program })
         return allowed(res)
       }
