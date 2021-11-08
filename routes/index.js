@@ -47,6 +47,7 @@ router.post("/check", async (req, res) => {
     if (otpToken.length === 0) return catchError(res, "Unknown header")
     else {
       const isUsed = await knex("userinfo").select("used").where({ program: req.body.program })
+      console.log(isUsed)
       if (isUsed[0]) return denied(res, "This token has already been used.")
       if (sendToken === otpToken[0]) {
         await knex("userinfo").update({ used: true }).where({ program: req.body.program })
