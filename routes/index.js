@@ -52,6 +52,8 @@ router.post("/check", async (req, res) => {
       if (sendToken === otpToken[0]) {
         await knex("userinfo").update({ used: true }).where({ program: req.body.program })
         return allowed(res)
+      } else {
+        return denied(res, "The value is different from the registered OTP token.")
       }
     }
   }
