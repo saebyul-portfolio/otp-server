@@ -46,8 +46,11 @@ router.post("/check", async (req, res) => {
     const otpToken = await knex("userinfo").where({ program: req.body.program })
     if (otpToken.length === 0) return catchError(res, "Unknown header")
     else {
-      const isUsed = await knex("userinfo").select("used").where({ program: req.body.program })
+      const isUsed = await knex("userinfo")
+        .select("used")
+        .where({ program: req.body.program, oauth: sendToken })
       console.log(isUsed)
+      if (!isUsed) return catchError(res, "Unexpected Token")
       if (isUsed[0]) return denied(res, "This token has already been used.")
       if (sendToken === otpToken[0]) {
         await knex("userinfo").update({ used: true }).where({ program: req.body.program })
