@@ -1,6 +1,6 @@
 const express = require("express")
 const router = express.Router()
-const config = require("../config")
+const config = require("../config.json")
 const knex = require("knex")(config.database)
 const { isToken } = require("../funcs/number")
 const { allowed, denied, notToken, catchError } = require("../funcs/sendHttpCode")
@@ -18,12 +18,11 @@ router.post("/oauth", async (req, res) => {
     if (oauth.length === 0)
       return await knex("userinfo").insert({
         user: "administrator",
-        password: "will be the password",
-        program: "todo",
+        program: config.programName,
         oauth: token,
       })
     knex("userinfo")
-      .where({ program: "todo" })
+      .where({ program: config.programName })
       .update({
         oauth: token,
         used: false,
