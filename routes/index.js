@@ -51,12 +51,10 @@ router.post("/check", async (req, res) => {
         .where({ program: req.body.program, oauth: sendToken })
       console.log(isUsed)
       if (!isUsed) return catchError(res, "Unexpected Token")
-      if (isUsed[0]) return denied(res, "This token has already been used.")
+      if (isUsed[0] === 1) return denied(res, "This token has already been used.")
       if (sendToken === otpToken[0]) {
         await knex("userinfo").update({ used: true }).where({ program: req.body.program })
         return allowed(res)
-      } else {
-        return denied(res, "The value is different from the registered OTP token.")
       }
     }
   }
